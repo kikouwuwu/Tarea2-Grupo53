@@ -1,0 +1,122 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+
+//To migrate this file use the command: npx prisma migrate dev
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+
+model personajes {
+  id                  Int                           @id @default(autoincrement())
+  nombre              String                        @unique @db.VarChar(45) 
+  fuerza              Int                           @default(0)
+  fecha_nacimiento    DateTime                      @db.Date                           
+  objeto              String                        @db.VarChar(45)
+  personajetrabaja    personaje_tiene_trabajo[] //una persona puede tener trabajos
+  personajehabitante  personaje_habita_reino[] //
+  personajekart       karts? //
+
+
+}
+
+model trabajos {
+  id                  Int                           @id @default(autoincrement()) 
+  descripcion         String                        @db.VarChar(45) //la descripcion no puede ser Not Null
+  sueldo              Int 
+  trabajapersonaje    personaje_tiene_trabajo[]
+}
+
+model karts {
+  id                  Int                           @id @default(autoincrement())
+  modelo              String                        @db.VarChar(45)
+  color               String                        @db.VarChar(45)
+  velocidad_maxima    Int?
+  id_personaje        Int                           @unique
+  personaje           personajes                    @relation(fields: [id_personaje], references: [id])
+}
+
+model reinos {
+  id                  Int                           @id @default(autoincrement())
+  nombre              String                        @db.VarChar(45)
+  ubicacion           String                        @db.VarChar(45)
+  superficie          Int 
+  reinohabitante      personaje_habita_reino[]
+  diplo1              diplomacia[]                  @relation("reino1")
+  diplo2              diplomacia[]                  @relation("reino2")
+  defensa             reino_ocupa_defensa[]         @relation("reino")
+  
+
+}
+
+model personaje_tiene_trabajo {
+  id_trabajo         Int
+  id_personaje       Int
+  fecha_inicio       DateTime                     @db.Date
+  fecha_termino      DateTime?                    @db.Date
+
+  trabajo            trabajos                     @relation(fields: [id_trabajo], references: [id])
+  personaje          personajes                   @relation(fields: [id_personaje], references: [id])
+
+  @@id([id_trabajo, id_personaje])
+}
+
+model personaje_habita_reino {
+  id_personaje      Int
+  id_reino          Int
+  fecha_registro    DateTime                      @db.Date
+  es_gobernante     Boolean                       @default(false)
+  personaje         personajes                    @relation(fields: [id_personaje], references: [id])
+  reino             reinos                        @relation(fields: [id_reino], references: [id])
+
+
+  @@id([id_reino, id_personaje])
+}
+
+model diplomacia{
+  id_reino_1        Int
+  id_reino_2        Int
+  es_aliado         Boolean                       @default(false)
+  reino1            reinos                        @relation("reino1", fields: [id_reino_1], references: [id])
+  reino2            reinos                        @relation("reino2", fields: [id_reino_2], references: [id])
+
+  @@id([id_reino_1, id_reino_2])
+
+
+}
+
+model defensas{
+  id                Int                           @id @default(autoincrement())
+  defensa           String                        @db.VarChar(45)
+  defensaocupada    reino_ocupa_defensa[]         @relation("defensita")
+}
+
+model reino_ocupa_defensa{
+  id_defensa        Int
+  id_reino          Int
+
+
+  reino             reinos                       @relation("reino", fields: [id_reino], references: [id])
+  defensa           defensas                     @relation("defensita", fields: [id_defensa], references: [id])
+
+  @@id([id_defensa, id_reino])
+  
+
+}
+
+
+
+
+
+
+
+
+
+
+
