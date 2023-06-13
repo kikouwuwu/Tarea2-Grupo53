@@ -59,7 +59,7 @@ model personaje_tiene_trabajo {
   id_trabajo         Int
   id_personaje       Int
   fecha_inicio       DateTime                     @db.Date
-  fecha_termino      DateTime?                    @db.Date
+  fecha_termino      DateTime                    @db.Date
 
   trabajo            trabajos                     @relation(fields: [id_trabajo], references: [id])
   personaje          personajes                   @relation(fields: [id_personaje], references: [id])
