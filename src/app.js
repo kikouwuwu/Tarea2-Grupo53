@@ -9,6 +9,7 @@ import KartsController from './controllers/KartsController.js';
 import PersonajeHabitaReinoController from './controllers/PersonajeHabitaReino.js';
 import DefensasController from './controllers/DefensasController.js';
 import ReinosController from './controllers/ReinosController.js';
+import EPControllers from './controllers/EPControllers.js';
 
 
 const ENV = process.env;
@@ -23,6 +24,11 @@ app.use(morgan('dev'));
 
 
 //endpoints(Routes)
+app.get('/api/personajes/top', EPControllers.getTop5Personajes);
+app.get('/api/personajes/masKarts', EPControllers.getPersonajeConMasKarts);
+app.get('/api/reinos/cantidadHabitantes/:idR', EPControllers.getCantidadHabitantesPorReino);
+app.get('/api/gobernante', EPControllers.getGobernantes);
+app.get('/api/gobernante/:id', EPControllers.getGobernantes);
 
 
 
@@ -38,11 +44,11 @@ app.post('/api/trabajos', TrabajosController.createTrabajos)
 app.put('/api/trabajos/:id', TrabajosController.updateTrabajos)
 app.delete('/api/trabajos/:id', TrabajosController.deleteTrabajos)
 
-app.get('/api/reino_ocupa_defensa', ReinoOcupaDefensaController.getReinoOcupaDefensa)
-app.get('/api/reino_ocupa_defensa/:id', ReinoOcupaDefensaController.getReinoOcupaDefensaById)
-app.post('/api/reino_ocupa_defensa', ReinoOcupaDefensaController.createReinoOcupaDefensa)
-app.put('/api/reino_ocupa_defensa/:id', ReinoOcupaDefensaController.updateReinoOcupaDefensa)
-app.delete('/api/reino_ocupa_defensa/:id', ReinoOcupaDefensaController.deleteReinoOcupaDefensa)
+app.get('/api/reino_ocupa_defensa', ReinoOcupaDefensaController.getReinoOcupaDefensa);
+app.get('/api/reino_ocupa_defensa/:id_reino/:id_defensa', ReinoOcupaDefensaController.getReinoOcupaDefensaById);
+app.post('/api/reino_ocupa_defensa', ReinoOcupaDefensaController.createReinoOcupaDefensa);
+app.put('/api/reino_ocupa_defensa/:id_reino/:id_defensa', ReinoOcupaDefensaController.updateReinoOcupaDefensa);
+app.delete('/api/reino_ocupa_defensa/:id_reino/:id_defensa', ReinoOcupaDefensaController.deleteReinoOcupaDefensa);
 
 app.get('/api/personaje_tiene_trabajo', PersonajeTieneTrabajoController.getPersonajeTieneTrabajo)
 app.get('/api/personaje_tiene_trabajo/:id', PersonajeTieneTrabajoController.getPersonajeTieneTrabajoById)
@@ -63,7 +69,7 @@ app.put('/api/karts/:id', KartsController.updateKarts)
 app.delete('/api/karts/:id', KartsController.deleteKarts)
 
 app.get('/api/personaje_habita_reino', PersonajeHabitaReinoController.getPersonajeHabitaReino)
-app.get('/api/personaje_habita_reino/:id', PersonajeHabitaReinoController.getPersonajeHabitaReinoById)
+app.get('/api/personaje_habita_reino/:id_personaje/:id_reino', PersonajeHabitaReinoController.getPersonajeHabitaReinoById)
 app.post('/api/personaje_habita_reino', PersonajeHabitaReinoController.createPersonajeHabitaReino)
 app.put('/api/personaje_habita_reino/:id', PersonajeHabitaReinoController.updatePersonajeHabitaReino)
 app.delete('/api/personaje_habita_reino/:id', PersonajeHabitaReinoController.deletePersonajeHabitaReino)
@@ -113,4 +119,3 @@ app.use((_, res) => {
 app.listen(ENV.API_PORT, () => {
     console.log(`Server running on port ${ENV.API_PORT}`);
 })
-

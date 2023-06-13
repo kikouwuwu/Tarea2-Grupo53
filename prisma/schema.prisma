@@ -19,12 +19,11 @@ model personajes {
   fuerza              Int                           @default(0)
   fecha_nacimiento    DateTime                      @db.Date                           
   objeto              String                        @db.VarChar(45)
-  personajetrabaja    personaje_tiene_trabajo[] //una persona puede tener trabajos
-  personajehabitante  personaje_habita_reino[] //
-  personajekart       karts? //
-
-
+  personajetrabaja    personaje_tiene_trabajo[]     // una persona puede tener trabajos
+  personajehabitante  personaje_habita_reino[]      // 
+  personajekart       karts[]                        @relation("personajeKarts")
 }
+
 
 model trabajos {
   id                  Int                           @id @default(autoincrement()) 
@@ -33,13 +32,14 @@ model trabajos {
   trabajapersonaje    personaje_tiene_trabajo[]
 }
 
+
 model karts {
   id                  Int                           @id @default(autoincrement())
   modelo              String                        @db.VarChar(45)
   color               String                        @db.VarChar(45)
   velocidad_maxima    Int?
-  id_personaje        Int                           @unique
-  personaje           personajes                    @relation(fields: [id_personaje], references: [id])
+  id_personaje        Int
+  personaje           personajes                    @relation("personajeKarts", fields: [id_personaje], references: [id])
 }
 
 model reinos {
@@ -59,7 +59,7 @@ model personaje_tiene_trabajo {
   id_trabajo         Int
   id_personaje       Int
   fecha_inicio       DateTime                     @db.Date
-  fecha_termino      DateTime                    @db.Date
+  fecha_termino      DateTime?                    @db.Date
 
   trabajo            trabajos                     @relation(fields: [id_trabajo], references: [id])
   personaje          personajes                   @relation(fields: [id_personaje], references: [id])
@@ -109,7 +109,6 @@ model reino_ocupa_defensa{
   
 
 }
-
 
 
 
